@@ -125,54 +125,56 @@ class _MainPlayerScreenState extends State<MainPlayerScreen>
           onThemeChanged: _onThemeChanged,
         ),
         body: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              
-              // Station Logo with Glow
-              _buildStationLogo(),
-              
-              const SizedBox(height: 30),
-              
-              // Station Name & Status
-              _buildStationInfo(),
-              
-              const SizedBox(height: 20),
-              
-              // Audio Visualizer
-              SizedBox(
-                height: 80,
-                child: PremiumAudioVisualizer(
-                  theme: _currentTheme,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                
+                // Station Logo with Glow
+                _buildStationLogo(),
+                
+                const SizedBox(height: 30),
+                
+                // Station Name & Status
+                _buildStationInfo(),
+                
+                const SizedBox(height: 20),
+                
+                // Audio Visualizer
+                SizedBox(
+                  height: 80,
+                  child: PremiumAudioVisualizer(
+                    theme: _currentTheme,
+                  ),
                 ),
-              ),
-              
-              const SizedBox(height: 30),
-              
-              // Announcement Banner
-              if (_currentAnnouncement != null)
-                AnnouncementBanner(
-                  announcement: _currentAnnouncement!,
-                  theme: _currentTheme,
-                  onDismiss: () {
-                    setState(() {
-                      _currentAnnouncement = null;
-                    });
-                  },
-                ),
-              
-              const Spacer(),
-              
-              // Play Button
-              _buildPlayButton(),
-              
-              const Spacer(),
-              
-              // Bottom Actions
-              _buildBottomActions(),
-              
-              const SizedBox(height: 30),
-            ],
+                
+                const SizedBox(height: 30),
+                
+                // Announcement Banner
+                if (_currentAnnouncement != null)
+                  AnnouncementBanner(
+                    announcement: _currentAnnouncement!,
+                    theme: _currentTheme,
+                    onDismiss: () {
+                      setState(() {
+                        _currentAnnouncement = null;
+                      });
+                    },
+                  ),
+                
+                const SizedBox(height: 40),
+                
+                // Play Button
+                _buildPlayButton(),
+                
+                const SizedBox(height: 40),
+                
+                // Bottom Actions
+                _buildBottomActions(),
+                
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),
