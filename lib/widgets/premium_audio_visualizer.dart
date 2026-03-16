@@ -73,7 +73,7 @@ class _PremiumAudioVisualizerState extends State<PremiumAudioVisualizer>
         ),
       );
 
-      final height = 20 + (animation.value * 40 * math.sin(index * 0.5 + _controller.value * math.pi * 2));
+      final height = 20 + (animation.value * 40 * math.sin(index * 0.5 + _controller.value * math.pi * 2)).abs();
       
       return Container(
         width: 6,
