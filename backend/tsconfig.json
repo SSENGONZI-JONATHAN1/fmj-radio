@@ -42,5 +42,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true
-  }
+  },
+  "exclude": ["dist", "prisma.config.ts", "prisma/seed.ts"]
 }

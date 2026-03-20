@@ -1,15 +1,190 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Prisma schema for a radio streaming platform
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+enum StationStatus {
+  Active
+  Maintenance
+  Offline
+}
 
+enum StreamQuality {
+  Low
+  Medium
+  High
+}
+
+enum DayOfWeek {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+enum AnnouncementPriority {
+  Low
+  Normal
+  High
+  Urgent
+}
+
+model Station {
+  id           String             @id @default(cuid())
+  slug         String             @unique @db.VarChar(255) // Unique slug for URLs
+  name         String             @db.VarChar(255)
+  description  String?            @db.Text
+  logoUrl      String?            @db.Text
+  coverImageUrl String?            @db.Text
+  country      String?            @db.VarChar(255)
+  language     String?            @db.VarChar(255)
+  status       StationStatus      @default(Active)
+  isFeatured   Boolean            @default(false)
+  isTrending   Boolean            @default(false)
+  streams      Stream[]
+  categoryId   String?
+  category     Category?          @relation(fields: [categoryId], references: [id])
+  tags         StationTag[]
+  programs     Program[]
+  favorites    Favorite[]
+  listeningSessions ListeningSession[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  @@index([slug])
+  @@index([name]) // Indexing for faster searches
+  @@index([isFeatured])
+  @@index([isTrending])
+}
+
+model Stream {
+  id        String        @id @default(cuid())
+  url       String        @db.Text
+  bitrate   Int?          // Bitrate in kbps
+  quality   StreamQuality @default(Medium)
+  stationId String
+  station   Station       @relation(fields: [stationId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([stationId])
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique @db.VarChar(255)
+  iconUrl   String?   @db.Text
+  stations  Station[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([name]) // Index for category name search
+}
+
+model Tag {
+  id       String       @id @default(cuid())
+  name     String       @unique @db.VarChar(255)
+  stations StationTag[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([name]) // Index for tag name search
+}
+
+model StationTag {
+  station   Station @relation(fields: [stationId], references: [id])
+  stationId String
+  tag       Tag @relation(fields: [tagId], references: [id])
+  tagId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([stationId, tagId])
+  @@index([stationId])
+  @@index([tagId])
+}
+
+model AppConfig {
+  id                  String  @id @default(cuid())
+  globalStationName String  @db.VarChar(255)
+  defaultLogoUrl    String? @db.Text
+  primaryColorHex   String? @db.VarChar(7) // e.g., "#FFFFFF"
+  secondaryColorHex String? @db.VarChar(7)
+  socialMediaLinks  Json?   // Store social media links as JSON
+  maintenanceMode   Boolean @default(false)
+  minimumAppVersion String  @db.VarChar(20) // Semantic versioning (e.g., "1.2.3")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Announcement {
+  id        String               @id @default(cuid())
+  title     String               @db.VarChar(255)
+  message   String               @db.Text
+  actionUrl String?              @db.Text
+  expiryDate DateTime
+  priority  AnnouncementPriority @default(Normal)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+}
+
+model Program {
+  id        String    @id @default(cuid())
+  showName  String    @db.VarChar(255)
+  hostName  String?   @db.VarChar(255)
+  dayOfWeek DayOfWeek
+  startTime DateTime
+  endTime   DateTime
+  stationId String
+  station   Station   @relation(fields: [stationId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([stationId])
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique @db.VarChar(255)
+  passwordHash String     @db.Text
+  favorites    Favorite[]
+  listeningSessions ListeningSession[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Favorite {
+  user      User @relation(fields: [userId], references: [id])
+  userId    String
+  station   Station @relation(fields: [stationId], references: [id])
+  stationId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, stationId])
+  @@index([userId])
+  @@index([stationId])
+}
+
+model ListeningSession {
+  id String @id @default(cuid())
+  station   Station @relation(fields: [stationId], references: [id])
+  stationId String
+  user      User? @relation(fields: [userId], references: [id])
+  userId    String?
+  durationSeconds Int // Duration listened in seconds
+  devicePlatform String @db.VarChar(255) // e.g., iOS, Android, Web
+  timestamp DateTime @default(now())
+
+  @@index([stationId])
+  @@index([userId])
+  @@index([timestamp])
+}

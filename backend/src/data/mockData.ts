@@ -1,5 +1,5 @@
-import { Station } from '../models/Station.js';
-import { Category } from '../models/Category.js';
+import type { Station } from '../models/Station.js';
+import type { Category } from '../models/Category.js';
 
 export const MOCK_STATIONS: Station[] = [
   {
@@ -53,6 +53,32 @@ export const MOCK_STATIONS: Station[] = [
     tags: ['News', 'Talk', 'Information'],
     isFavorite: false,
     metadata: { bitrate: '128kbps', format: 'mp3' }
+  },
+  {
+    id: 'jfm-5',
+    name: 'Jfm Radio - Top 40',
+    streamUrl: 'https://stream.zeno.fm/0r0xapr5mceuv',
+    logoUrl: 'https://i.imgur.com/JfmLogo.png',
+    description: 'The absolute best of today\'s music.',
+    category: 'pop',
+    country: 'International',
+    language: 'English',
+    tags: ['Pop', 'Top40', 'Hits'],
+    isFavorite: false,
+    metadata: { bitrate: '128kbps', format: 'mp3' }
+  },
+  {
+    id: 'jfm-6',
+    name: 'Jfm Radio - Soft Pop',
+    streamUrl: 'https://stream.zeno.fm/0r0xapr5mceuv',
+    logoUrl: 'https://i.imgur.com/JfmLogo.png',
+    description: 'Mellow pop tracks for a relaxing afternoon.',
+    category: 'pop',
+    country: 'International',
+    language: 'English',
+    tags: ['Pop', 'Soft', 'Relax'],
+    isFavorite: false,
+    metadata: { bitrate: '128kbps', format: 'mp3' }
   }
 ];
 
@@ -63,4 +89,21 @@ export const MOCK_CATEGORIES: Category[] = [
   { id: 'news', name: 'News & Talk', stationCount: 90 },
   { id: 'sports', name: 'Sports', stationCount: 70 },
   { id: 'classical', name: 'Classical', stationCount: 60 }
+];
+
+export const MOCK_COUNTRIES = [
+  { id: 'international', name: 'International' },
+  { id: 'usa', name: 'USA' },
+  { id: 'uk', name: 'UK' },
+  { id: 'canada', name: 'Canada' },
+  { id: 'germany', name: 'Germany' },
+  { id: 'france', name: 'France' }
+];
+
+export const MOCK_LANGUAGES = [
+  { id: 'english', name: 'English' },
+  { id: 'spanish', name: 'Spanish' },
+  { id: 'french', name: 'French' },
+  { id: 'german', name: 'German' },
+  { id: 'italian', name: 'Italian' }
 ];
